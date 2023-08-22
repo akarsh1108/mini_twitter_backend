@@ -3,13 +3,11 @@ const router = express.Router();
 const User= require('../models/User');
 const {body,validationResult} = require('express-validator');
 const bcrypt = require('bcryptjs');
-const fetchuser=require('../middleware/fetchuser');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET=process.env.JWT_TOKEN;
 
 
-//Creating a User
 router.post('/createuser',[
     body('name',"Enter a valid name").isLength({min:3}),
     body('password',"Password should be of atleast 5 characters").isLength({min:5}),
@@ -41,7 +39,7 @@ router.post('/createuser',[
         }
         const authToken=jwt.sign(data,process.env.JWT_TOKEN);
         success= true;
-        res.json({success,authToken})
+        res.status(200).json(user);
     }
     catch(error){
         console.error(error.message);
@@ -50,7 +48,6 @@ router.post('/createuser',[
 })
 
 
-//Logged in user
 router.post('/login',[
     body('name','Name cannot be blank').exists(),
     body('password','Password cannot be blank').exists(),
@@ -78,7 +75,7 @@ router.post('/login',[
         }
         const authtoken=jwt.sign(data,process.env.JWT_TOKEN)
         success=true;
-        res.json({success,authtoken})
+        res.status(200).json(user);
     }
     catch(error){
         console.error(error.message);
